@@ -11,6 +11,7 @@ try:
 except:
 	from datetime import datetime as DateTime, time as Time, date as Date
 from re import compile
+from FMError import FMError
 
 reDateTime = compile('((\d{2})/(\d{2})/(\d{4}))? ?((\d{2}):(\d{2}):(\d{2}))?')
 
@@ -24,7 +25,7 @@ def makeFMData( from_dict, locked = False):
 			- only attributtes given during initialization are readable and writable 
 			- modified attributes are tracked"""
 		__modified__ = set()
-		__slots__ = from_dict.keys()
+		__slots__ = [filter(type(k).isalnum, k) for k in from_dict.keys()]
 
 		def __init__(self, init_dict, locked = False):
 			for key in init_dict:
@@ -128,4 +129,7 @@ def makeFMData( from_dict, locked = False):
 			return str(('\n'.join(l)).encode('utf-8'))
 
 
+	for key in from_dict:
+		if (key.isalnum() == False):
+			raise FMError, "Field Name '%s' contain unsupported characters - it must be alphanumeric without spaces." % key
 	return FMData( from_dict, locked )
