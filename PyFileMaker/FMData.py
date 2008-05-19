@@ -14,6 +14,7 @@ from re import compile
 from FMError import FMError
 
 reDateTime = compile('((\d{2})/(\d{2})/(\d{4}))? ?((\d{2}):(\d{2}):(\d{2}))?')
+reIdentifier = compile('^[a-zA-Z_][a-zA-Z0-9_]*$')
 
 def makeFMData( from_dict, locked = False):
 	"""Returns FMData structure which is initialized by given dictionary"""
@@ -25,7 +26,7 @@ def makeFMData( from_dict, locked = False):
 			- only attributtes given during initialization are readable and writable 
 			- modified attributes are tracked"""
 		__modified__ = set()
-		__slots__ = [filter(type(k).isalnum, k) for k in from_dict.keys()]
+		__slots__ = [filter(reIdentifier.match, k) for k in from_dict.keys()]
 
 		def __init__(self, init_dict, locked = False):
 			for key in init_dict:
@@ -130,6 +131,6 @@ def makeFMData( from_dict, locked = False):
 
 
 	for key in from_dict:
-		if (key.isalnum() == False):
+		if (not reIdentifier.match(key)):
 			raise FMError, "Field Name '%s' contain unsupported characters - it must be alphanumeric without spaces." % key
 	return FMData( from_dict, locked )
