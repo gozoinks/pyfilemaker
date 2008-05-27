@@ -194,13 +194,16 @@ class FMError( StandardError ):
 class FMFieldError( StandardError ):
 	"""Exception for missing field inside of FM (e.g. FMError 102)."""
 
+class FMServerError( FMError ):
+	"""Exception caused by FileMaker Server"""
+
 
 def FMErrorByNum( num ):
 	"""This function raises an error based on the specified error code."""
 
 	if not num in FMErrorNum.keys():
-		raise FMError, FMErrorNum[-1]
+		raise FMServerError, (num, FMErrorNum[-1])
 	elif num == 102:
-		raise FMFieldError, FMErrorNum[num]
+		raise FMFieldError, (num, FMErrorNum[num])
 	else:
-		raise FMError, FMErrorNum[num]
+		raise FMServerError, (num, FMErrorNum[num])
