@@ -362,7 +362,10 @@ class FMServer:
 
 		if hasattr(WHAT, '_modified'):
 			for key, value in WHAT._modified():
-				self._addDBParam( key, value )
+				if WHAT.__new2old__.has_key(key):
+					self._addDBParam( WHAT.__new2old__[key].encode('utf-8'), value )
+				else:	
+					self._addDBParam( key, value )
 			self._addDBParam( 'RECORDID', WHAT.RECORDID )
 			self._addDBParam( 'MODID', WHAT.MODID )
 		elif type(WHAT)==dict:
@@ -393,7 +396,10 @@ class FMServer:
 		if hasattr(WHAT, '_modified'):
 			for key in WHAT:
 				if key not in ['RECORDID','MODID']:
-					self._addDBParam( key, WHAT[key] )
+					if WHAT.__new2old__.has_key(key):
+						self._addDBParam( WHAT.__new2old__[key].encode('utf-8'), WHAT[key] )
+					else:	
+						self._addDBParam( key, WHAT[key] )
 		elif type(WHAT)==dict:
 			for key in WHAT:
 				self._addDBParam( key, WHAT[key] )
@@ -428,7 +434,10 @@ class FMServer:
 
 		if hasattr(WHAT, '_modified'):
 			for key, value in WHAT._modified():
-				self._addDBParam( key, value )
+				if WHAT.__new2old__.has_key(key):
+					self._addDBParam( WHAT.__new2old__[key].encode('utf-8'), value )
+				else:	
+					self._addDBParam( key, value )
 			self._addDBParam( 'RECORDID', WHAT.RECORDID )
 			self._addDBParam( 'MODID', WHAT.MODID )
 		elif type(WHAT) == dict:
@@ -498,7 +507,7 @@ class FMServer:
 	   
 				elif hasattr(dbParam[1], 'strftime'):
 					d = dbParam[1]
-					if (d.second + d.minute * 60 + d.hour * 3600) == 0:
+					if (not d.hasattr(d, 'second')) and (d.second + d.minute * 60 + d.hour * 3600) == 0:
 						request.append( uu( { dbParam[0]: d.strftime('%m-%d-%Y') } ) )
 					else:
 						request.append( uu( { dbParam[0]: d.strftime('%m-%d-%Y %H:%M:%S') } ) )
@@ -514,6 +523,7 @@ class FMServer:
 			#if action == '-view':
 			#	 result = FMProLayout.FMProLayout( result )
 			#else:
+			
 			try:
 				result = FMResultset.FMResultset( result )
 			except FMFieldError, value:
@@ -525,9 +535,9 @@ class FMServer:
 				l = []
 				for k, v in self._dbParams:
 					if k[-3:] != '.op' and k[0] != '-':
-						l.append("'%s'" % k.replace('::','.'))
+						l.append( ("'%s'" % k.replace('::','.')).encode('utf-8') )
 				raise FMError, "Field(s) %s not found on layout '%s'" % (', '.join(l), self._layout)
-			
+
 			if action == '-view':
 				result = result.fieldNames
 

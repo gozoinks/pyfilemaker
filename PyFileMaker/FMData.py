@@ -12,9 +12,29 @@ except:
 	from datetime import datetime as DateTime, time as Time, date as Date
 from re import compile
 from FMError import FMError
+from UnicodeNormalizer import normalizeUnicode
 
 reDateTime = compile('((\d{2})/(\d{2})/(\d{4}))? ?((\d{2}):(\d{2}):(\d{2}))?')
-reIdentifier = compile('^[a-zA-Z_][a-zA-Z0-9_]*$')
+
+def key_dict( from_dict ):
+	"""Returns dict from_dict['unicode_save_field'] = 'original key with unicode' """
+	new_dict = {}
+	old2new = {}
+	new2old = {}
+	for key in from_dict:
+		k = normalizeUnicode(key,'identifier')
+		if k != key:
+			i = ''
+			while new_dict.has_key("%s%s" % (k,i) ):
+				if not i:
+					i = 1
+				else:
+					i += 1
+			k = "%s%s" % (k,i)
+			old2new[key] = k
+			new2old[k] = key
+		new_dict[k] = from_dict[key]
+	return (new_dict.keys(), new_dict, old2new, new2old)
 
 def makeFMData( from_dict, locked = False):
 	"""Returns FMData structure which is initialized by given dictionary"""
@@ -26,9 +46,10 @@ def makeFMData( from_dict, locked = False):
 			- only attributtes given during initialization are readable and writable 
 			- modified attributes are tracked"""
 		__modified__ = set()
-		__slots__ = [filter(reIdentifier.match, k) for k in from_dict.keys()]
+		__slots__, __init_dict__, __old2new__, __new2old__ = key_dict(  from_dict )
 
-		def __init__(self, init_dict, locked = False):
+		def __init__(self, locked = False):
+			init_dict = self.__init_dict__
 			for key in init_dict:
 				value = init_dict[key]
 				date, mo, da, ye, time, ho, mi, se = [None] * 8
@@ -73,13 +94,25 @@ def makeFMData( from_dict, locked = False):
 			else:
 				print "-"*20, key, type(key)
 			if len(spl) == 2:
+				if self.__old2new__.has_key(spl[0]):
+					spl[0] = self.__old2new__[spl[0]]
+				if self.__old2new__.has_key(spl[1]):
+					spl[1] = self.__old2new__[spl[1]]					
 				return getattr( getattr(self, spl[0]), spl[1])
+			if self.__old2new__.has_key(key):
+				key = self.__old2new__[key]
 			return getattr(self, key)
 
 		def __setitem__(self, key, value):
 			spl = key.split('.')
 			if len(spl) == 2:
+				if self.__old2new__.has_key(spl[0]):
+					spl[0] = self.__old2new__[spl[0]]
+				if self.__old2new__.has_key(spl[1]):
+					spl[1] = self.__old2new__[spl[1]]					
 				return setattr( getattr(self, spl[0]), spl[1], value)
+			if self.__old2new__.has_key(key):
+				key = self.__old2new__[key]
 			return setattr(self, key, value)
 
 		def __str__(self):
@@ -114,6 +147,9 @@ def makeFMData( from_dict, locked = False):
 			#return pformat(dict([(value, getattr(self, value)) for value in self.__slots__]))
 			l = []
 			for key in self.__slots__:
+				ukey = ""
+				if self.__new2old__.has_key(key):
+					ukey = " (%s)" % self.__new2old__[key]
 				if hasattr( getattr(self, key), '__slots__'):
 					for subkey in getattr(self, key).__slots__:
 						value = getattr( getattr(self, key), subkey)
@@ -121,16 +157,13 @@ def makeFMData( from_dict, locked = False):
 							value = value.decode('utf-8')
 						l.append( "%s.%s = '%s'" % (key, subkey, value))
 				elif type(getattr(self, key)) == list:
-					l.append( "%s = <list with %s records>" % (key, len(getattr(self, key))))
+					l.append( "%s%s = <list with %s records>" % (key, ukey, len(getattr(self, key))))
 				elif type(getattr(self, key)) == str:
-					l.append( "%s = '%s'" % (key, getattr(self, key).decode('utf-8')))
+					l.append( "%s%s = '%s'" % (key, ukey, getattr(self, key).decode('utf-8')))
 				else:
-					l.append( "%s = '%s'" % (key, getattr(self, key)))
+					l.append( "%s%s = '%s'" % (key, ukey, getattr(self, key)))
 			l.sort()
 			return str(('\n'.join(l)).encode('utf-8'))
 
 
-	for key in from_dict:
-		if (not reIdentifier.match(key)):
-			raise FMError, "Field Name '%s' contain unsupported characters - it must be alphanumeric without spaces." % key
-	return FMData( from_dict, locked )
+	return FMData( locked )
