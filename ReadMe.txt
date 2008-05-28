@@ -1,5 +1,5 @@
 -------------------------------------------------------------------------------
-PyFileMaker 2.5 - Integrating FileMaker and Python 
+PyFileMaker - Integrating FileMaker and Python 
 (c) 2006-2008 Klokan Petr Pridal, klokan@klokan.cz 
 (c) 2002-2006 Pieter Claerhout, pieter@yellowduck.be
  
@@ -40,7 +40,7 @@ tested the module on MacOS 9 and MacOS X version 10.1.5 and version 10.2.
 
 Linux and Unix type of operating systems should work without any problems.
 
-PyFileMaker 2.5:
+PyFileMaker:
 - Python version 2.4 (includes expat by default) or higher
 - FileMaker Server Advanced 7, 8 or 8.5 with XML sharing enabled
 
@@ -72,7 +72,7 @@ About Python: http://www.python.org
 About FileMaker Pro: http://www.filemaker.com
 About PyFileMaker 1.2: http://www.yellowduck.be/filemaker/
 About PyFileMaker 2.0: http://www.yellowduck.be/filemaker/
-About PyFileMaker 2.5: http://code.google.com/p/pyfilemaker/
+About PyFileMaker: http://code.google.com/p/pyfilemaker/
 
 6. CHANGES
 

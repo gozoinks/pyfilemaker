@@ -1,8 +1,8 @@
-========================
-Usage of PyFileMaker 2.5
-========================
+====================
+Usage of PyFileMaker
+====================
 
-Actual version is on the website http://code.google.com/p/pyfilemaker
+Latest version is available at http://code.google.com/p/pyfilemaker
 
 PyFileMaker module is designed for both script and interactive use.
 Any command used during interactive session is possible to type in a script.

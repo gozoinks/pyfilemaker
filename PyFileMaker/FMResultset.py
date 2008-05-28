@@ -1,4 +1,4 @@
-# PyFileMaker 2.5 - Integrating FileMaker and Python 
+# PyFileMaker - Integrating FileMaker and Python 
 # (c) 2006-2008 Klokan Petr Pridal, klokan@klokan.cz 
 # (c) 2002-2006 Pieter Claerhout, pieter@yellowduck.be
 # 

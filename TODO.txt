@@ -1,12 +1,12 @@
-* PyFileMaker 2.5:
+* PyFileMaker:
 
 	    (- implement FMlayout correctly)
 	    (- merge changes from 1.2a3 and 2.0)
 	    (- image/blob export functionality not tested)
-		(- support all utf field names and spaces - internally still stripped to ascii )
 		(- add better support for -script and -script.param now just in {})
 		(- operators as in Google App Engine data models?)
 		(- maybe rewrite to ElementTree?)
+DONE	- support all utf field names and spaces - internally still stripped to ascii
 ?? ''   - present empty related records as 'None', and prevent their modification (locking?)
 DONE    - Bug when related table contain field like "Table::field"
 DONE    - Correct date/time format handling 
