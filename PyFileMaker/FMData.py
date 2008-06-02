@@ -23,14 +23,14 @@ def key_dict( from_dict ):
 	new2old = {}
 	for key in from_dict:
 		k = normalizeUnicode(key,'identifier')
+		i = ''
+		while new_dict.has_key("%s%s" % (k,i) ):
+			if not i:
+				i = 1
+			else:
+				i += 1
+		k = "%s%s" % (k,i)
 		if k != key:
-			i = ''
-			while new_dict.has_key("%s%s" % (k,i) ):
-				if not i:
-					i = 1
-				else:
-					i += 1
-			k = "%s%s" % (k,i)
 			old2new[key] = k
 			new2old[k] = key
 		new_dict[k] = from_dict[key]
