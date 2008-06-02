@@ -507,7 +507,7 @@ class FMServer:
 	   
 				elif hasattr(dbParam[1], 'strftime'):
 					d = dbParam[1]
-					if (not d.hasattr(d, 'second')) or (d.hasattr(d,'second') and (d.second + d.minute * 60 + d.hour * 3600) == 0):
+					if (not hasattr(d, 'second')) or (hasattr(d,'second') and (d.second + d.minute * 60 + d.hour * 3600) == 0):
 						request.append( uu( { dbParam[0]: d.strftime('%m-%d-%Y') } ) )
 					else:
 						request.append( uu( { dbParam[0]: d.strftime('%m-%d-%Y %H:%M:%S') } ) )
