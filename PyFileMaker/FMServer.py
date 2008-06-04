@@ -499,6 +499,11 @@ class FMServer:
 
 			for dbParam in self._dbParams:
 
+				if type(dbParam[0]) == unicode:
+				    dbParam[0] = dbParam[0].encode('utf-8')
+				if type(dbParam[1]) == unicode:
+				    dbParam[1] = dbParam[1].encode('utf-8')
+
 				if dbParam[0] == 'RECORDID':
 					request.append( uu( { '-recid': dbParam[1] } ) )
 				
