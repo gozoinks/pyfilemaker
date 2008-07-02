@@ -23,6 +23,8 @@ def key_dict( from_dict ):
 	new2old = {}
 	for key in from_dict:
 		k = normalizeUnicode(key,'identifier')
+		if not k: # ignore empty field names
+			continue
 		i = ''
 		while new_dict.has_key("%s%s" % (k,i) ):
 			if not i:

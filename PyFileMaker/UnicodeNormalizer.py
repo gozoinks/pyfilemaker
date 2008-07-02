@@ -61,6 +61,8 @@ def normalizeUnicode(text, encoding='humanascii'):
     letters. Output is ASCII encoded string (or char) with only ASCII letters,
     digits, punctuation and whitespace characters. Case is preserved.
     """
+	if not text:
+		return ""
     unicodeinput = True
     if not isinstance(text, unicode):
         text = unicode(text, 'utf-8')
